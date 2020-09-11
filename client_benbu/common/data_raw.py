@@ -101,23 +101,18 @@ class TestDataset(Dataset):
         self.std = 489.42172740885655
 
     def __getitem__(self, item):
-        # random.seed(0)
         margin = 8
+
+        # Covid4945_20200418_1_0
         name_test = self.names_test[item]
-        label_test = self.labels_test_df.at[name_test, "label"]
+        label_test = self.labels_test_df.at[name_test, "four_label"]
         patient_id = self.labels_test_df.at[name_test, "patient_id"]
         path_test = self.data_dir + name_test + ".nii.gz"
-        # image_test = nib.load(path_test).get_fdata().astype(np.int32).transpose(2, 1, 0)
         image_test = load_image(path_test, self.mean, self.std)
-        # image_test = load_image_norm(path_test)
         z_test, h_test, w_test = image_test.shape
         image_test = torch.from_numpy(image_test).float()
         index_list = []
         if z_test <= 80:
-            # start=random.randrange(0,z_test-15)
-            # for i in range(margin * 2):
-            #     index_list.append(start+i*1)
-            # start=random.randrange(0,z_test-15)
             if z_test <= margin*2:
                 start = 0
             else:
@@ -135,7 +130,6 @@ class TestDataset(Dataset):
 
         image_test_crop = []
         for index in index_list:
-            # print(z_test)
             if z_test < margin*2:
                 left_pad = (margin * 2 - z_test)//2
                 right_pad = margin * 2 - left_pad - z_test
@@ -143,9 +137,7 @@ class TestDataset(Dataset):
                 image_test = F.pad(image_test, pad, "constant")
             image_test_crop.append(image_test[index, :, :])
         image_test_crop = torch.stack(image_test_crop, 0).float()
-        # image_test_crop = image_test[(z_test//2 - margin) : (z_test//2 + margin), :, :]
         return image_test_crop, label_test, name_test, patient_id
 
     def __len__(self):
         return len(self.names_test)
-

@@ -5,9 +5,21 @@ import logging
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
-    level=logging.DEBUG)
+    level=logging.INFO)
 
-log = logging.getLogger()
+def create_log(filename):
+    log = logging.getLogger()
+    fh = logging.FileHandler(filename)
+    fh.setLevel(logging.DEBUG)
+
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+
+    # add the handlers to logger
+    log.addHandler(ch)
+    log.addHandler(fh)
+
+    return log
 
 
 class Logger(object):

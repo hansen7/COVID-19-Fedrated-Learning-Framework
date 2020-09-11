@@ -50,7 +50,7 @@ class FL_Client(object):
 
             head_dir = json.dumps({'username': self.configs['username'],
                                    'password': self.configs['password'],
-                                   'msg': "register"})
+                                   'msg':      "register"})
             send_head_dir(conn=send_socket, head_dir=head_dir)
             recv_dir = recv_head_dir(conn=send_socket)
 
@@ -74,7 +74,7 @@ class FL_Client(object):
             send_socket.connect(self.server_ip_port)
 
             head_dir = json.dumps({'username': self.configs['username'],
-                                   'msg': "request_model"})
+                                   'msg':      "request_model"})
             send_head_dir(conn=send_socket, head_dir=head_dir)
             recv_dir = recv_head_dir(conn=send_socket)
 
@@ -132,15 +132,15 @@ class FL_Client(object):
 
     def pack_param(self, _model_state, _client_weight, save_path=None):
         ob = {"model_state_dict": _model_state,
-              "client_weight": _client_weight}
+              "client_weight":    _client_weight}
         torch.save(ob, save_path) if save_path is not None else torch.save(ob, self.weight_path)
 
     @staticmethod
     def unpack_param(_model_param_path):
         ob = torch.load(_model_param_path)
-        #print(type(ob))
-        #print(len(ob))
-        #print(ob[0])
+        # print(type(ob))
+        # print(len(ob))
+        # print(ob[0])
         return ob['model_state_dict'], ob['client_weight'], ob['client_num']
 
     def enc_num(self, num):
